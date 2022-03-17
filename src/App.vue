@@ -1,8 +1,8 @@
 <template>
-  <div id="app" class="app">
+  <div id="app" class="app bg-dark">
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/home">
           <img
             src="./assets/logo.png"
             alt="Logo"
@@ -21,88 +21,89 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
-          <span class="navbar-text">
-            <div
-              class="btn-group"
-              role="group"
-              aria-label="Basic outlined example"
-            >
-              <button
-                class="btn btn-dark menu"
-                v-if="!is_auth"
-                v-on:click="loadLogIn"
+          <div class="button-container">
+            <span class="navbar-text text-light">
+              <div
+                class="btn-group"
+                role="group"
+                aria-label="Basic outlined example"
               >
-                LogIn
-              </button>
-              <button
-                class="btn btn-dark menu"
-                v-if="!is_auth"
-                v-on:click="loadSignUp"
-              >
-                Register
-              </button>
-            </div>
-          </span>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-on:click="loadHome"
+                >
+                  <i class="bi bi-house-fill text-light"></i> Inicio
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-on:click="loadProduct"
+                >
+                  Productos
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-on:click="loadAbout"
+                >
+                  <i class="bi bi-people-fill text-light"></i> Nosotros
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-on:click="loadUsersCrud"
+                >
+                  <i class="bi bi-cart-fill text-light"></i> Carrito
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-if="!is_auth"
+                  v-on:click="loadLogIn"
+                >
+                  <i class="bi bi-person-fill text-light" /> Iniciar Sesión
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-if="is_auth"
+                  v-on:click="logout"
+                >
+                  Cerrar Sesión
+                </button>
+              </div>
+            </span>
+          </div>
         </div>
       </div>
     </nav>
 
     <div class="main-component">
-      <router-view
-        v-on:completedLogIn="completedLogIn"
-        v-on:completedSignUp="completedSignUp"
-      >
-      </router-view>
+      <router-view v-on:completedLogin="completedLogin"> </router-view>
     </div>
 
-    <div class="footer bg-dark">
-      <div class="container">
-        <footer
-          class="
-            d-flex
-            flex-wrap
-            justify-content-between
-            align-items-center
-            py-3
-            my-4
-            border-top
-          "
-        >
-          <div class="col-md-4 d-flex align-items-center">
-            <a
-              href="/"
-              class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1"
-            >
-              <svg class="bi" width="30" height="24">
-                <use xlink:href="#bootstrap" />
-              </svg>
-            </a>
-            <span class="text-muted">&copy; 2021 Company, Inc</span>
-          </div>
-
-          <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-            <li class="ms-3">
-              <a class="text-muted" href="#"
-                ><svg class="bi" width="24" height="24">
-                  <use xlink:href="#twitter" /></svg
-              ></a>
-            </li>
-            <li class="ms-3">
-              <a class="text-muted" href="#"
-                ><svg class="bi" width="24" height="24">
-                  <use xlink:href="#instagram" /></svg
-              ></a>
-            </li>
-            <li class="ms-3">
-              <a class="text-muted" href="#"
-                ><svg class="bi" width="24" height="24">
-                  <use xlink:href="#facebook" /></svg
-              ></a>
-            </li>
-          </ul>
-        </footer>
+    <footer
+      class="
+        d-flex
+        flex-wrap
+        justify-content-between
+        align-items-center
+        py-3
+        bg-dark
+        footer
+      "
+    >
+      <div class="col-md-4 d-flex align-items-center">
+        <span class="text-light">&copy; 2022 La Huerta Supermercado</span>
       </div>
-    </div>
+
+      <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+        <li class="ms-3">
+          <a class="text-light" href="https://www.youtube.com/channel/UC_Qwl0a9d3uOZypIhA3p37g/videos" target="_blank"><i class="bi bi-youtube"></i></a>
+        </li>
+        <li class="ms-3">
+          <a class="text-light" href="https://www.instagram.com/fruverhuerta/?hl=es" target="_blank"><i class="bi bi-instagram"></i></a>
+        </li>
+        <li class="ms-3">
+          <a class="text-light" href="https://www.facebook.com/lahuertaduitama/" target="_blank"><i class="bi bi-facebook"></i></a>
+        </li>
+      </ul>
+    </footer>
   </div>
 </template>
 
@@ -114,19 +115,41 @@ export default {
       is_auth: false,
     };
   },
-  components: {},
   methods: {
     verifyAuth: function () {
-      if (this.is_auth == false) this.$router.push({ name: "logIn" });
+      this.is_auth = localStorage.getItem("is_auth");
+      if (this.is_auth) {
+        this.loadHome();
+      } else {
+        this.loadLogIn();
+      }
+    },
+    logout: function () {
+      this.is_auth = false;
+      localStorage.clear();
+      this.verifyAuth();
     },
     loadLogIn: function () {
       this.$router.push({ name: "logIn" });
     },
-    loadSignUp: function () {
-      this.$router.push({ name: "signUp" });
+    loadHome: function () {
+      this.$router.push({ name: "home" });
     },
-    completedLogIn: function (data) {},
-    completedSignUp: function (data) {},
+    loadAbout: function () {
+      this.$router.push({ name: "aboutUs" });
+    },
+    loadProduct: function () {
+      this.$router.push({ name: "products" });
+    },
+    loadUsersCrud: function () {
+      this.$router.push({ name: "usersCrud" });
+    },
+    completedLogin: function (res) {
+      this.is_auth = true;
+      localStorage.setItem("is_auth", true);
+      localStorage.setItem("token", res.data.key);
+      this.verifyAuth();
+    },
   },
   created: function () {
     this.verifyAuth();
@@ -135,50 +158,40 @@ export default {
 </script>
 
 <style>
-.bd-placeholder-img {
-  font-size: 1.125rem;
-  text-anchor: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
-
-@media (min-width: 768px) {
-  .bd-placeholder-img-lg {
-    font-size: 3.5rem;
-  }
-}
 body {
-  margin: 0 0 0 0;
-  background-color: #f2f2f2;
+  margin: 0;
+  overflow: auto;
 }
 nav {
+  color: #ffffff;
   background-color: rgba(19, 19, 19, 0.8) !important;
+  opacity: 0.87;
 }
 .navbar .logo {
   width: 110px;
-  margin-left: 20px;
+  margin-left: 40px;
 }
 .navbar .menu {
-  margin: 8px 15px;
+  margin: 8px 20px;
 }
 .navbar .menu:hover {
   border: 1px solid #b2cb4c;
   background-color: #b2cb4c;
 }
+.button-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
 .main-component {
-  height: 90vh;
+  height: 100%;
 }
 .footer {
+  left: 0;
+  right: 0;
   bottom: 0;
-  width: 100%;
-  height: fit-content;
-  position: fixed;
-  color: #e5e7e9;
-  background-color: rgba(19, 19, 19, 0.8);
-}
-.footer h4 {
-  margin-bottom: 15px;
-  text-align: center;
+  position: absolute;
+  padding: 0 30px;
+  margin-bottom: 0px;
 }
 </style>

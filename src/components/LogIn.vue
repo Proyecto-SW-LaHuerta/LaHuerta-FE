@@ -1,30 +1,41 @@
 <template>
   <div class="logIn_user">
     <div class="container_logIn_user">
-      <h2>Iniciar sesión</h2>
+      <h1>Bienvenido</h1>
+      <br />
       <form v-on:submit.prevent="processLogInUser">
+        <div class="row">
+          <div class="col-6">
+            <button type="button" class="btn btn-primary">Cliente</button>
+          </div>
+          <div class="col-6">
+            <button type="button" class="btn btn-primary">Admin</button>
+          </div>
+        </div>
+        <br />
         <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label"
-            >Email address</label
+          <label for="exampleInputEmail1" class="form-label">Usuario</label>
+          <input type="text" class="form-control" v-model="user.username" />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"
+            >Contraseña</label
           >
-          <input
-            type="email"
-            class="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp" placeholder="example@gmail.com"
-            v-model="user.username"
-          />
+          <input type="password" class="form-control" v-model="user.password" />
         </div>
-        <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="exampleInputPassword1"
-            v-model="user.password"
-          />
+        <div class="alert alert-danger errorMessage" role="alert" v-if="error">
+          Usuario o contraseña incorrecta
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          v-on:click="processLogInUser"
+        >
+          Iniciar Sesión
+        </button>
+        <button type="submit" class="btn btn-primary" v-on:click="loadSignUp">
+          Registrarse
+        </button>
       </form>
     </div>
   </div>
@@ -40,27 +51,30 @@ export default {
         username: "",
         password: "",
       },
+      error: false,
     };
   },
   methods: {
     processLogInUser: function () {
+      let url = "http://127.0.0.1:8000/rest-auth/login/";
+      let body = this.user;
+      let config = { headers: {} };
       axios
-        .post("https://mision-tic-bank-be.herokuapp.com/login/", this.user, {
-          headers: {},
+        .post(url, body, config)
+        .then((res) => {
+          this.error = false;
+          this.$emit("completedLogin", res);
         })
-        .then((result) => {
-          let dataLogIn = {
-            username: this.user.username,
-            token_access: result.data.access,
-            token_refresh: result.data.refresh,
-          };
-
-          this.$emit("completedLogIn", dataLogIn);
-        })
-        .catch((error) => {
-          if (error.response.status == "401")
-            alert("ERROR 401: Credenciales Incorrectas.");
+        .catch((err) => {
+          if (err.response.status == 400) {
+            this.error = true;
+          } else {
+            alert("Error inesperado, intentelo mas tarde");
+          }
         });
+    },
+    loadSignUp: function () {
+      this.$router.push({ name: "signUp" });
     },
   },
 };
@@ -69,29 +83,40 @@ export default {
 <style>
 .logIn_user {
   margin: 0;
-  padding: 0%;
-  height: 80%;
+  padding-top: 150px;
+  height: 100%;
   width: 100%;
   position: fixed;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  background-image: url(/img/about_background.2b7c380a.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: auto;
+  align-content: flex-start;
+}
+.logIn_user h1 {
+  color: #ffffff;
 }
 .container_logIn_user {
-  border: 3px solid #b2cb4c;
+  border: 1px solid #b2cb4c;
+  background-color: rgba(19, 19, 19, 0.75);
   border-radius: 10px;
-  width: 25%;
-  height: 60%;
+  width: 40%;
+  height: max-content;
+  padding: 30px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.logIn_user h2 {
-  color: #b2cb4c;
-}
 .logIn_user form {
   width: 70%;
+}
+.form-label {
+  color: #ffffff;
 }
 .logIn_user input {
   height: 40px;
@@ -103,16 +128,19 @@ export default {
 }
 .logIn_user button {
   width: 100%;
-  color: #e5e7e9;
+  color: #ffffff;
   background: #b2cb4c;
-  border: 1px solid #e5e7e9;
+  border: 1px solid #b2cb4c;
   border-radius: 5px;
   padding: 10px 25px;
   margin: 5px 0;
 }
 .logIn_user button:hover {
-  color: #e5e7e9;
+  color: #ffffff;
   background: #097d32;
-  border: 1px solid #b2cb4c;
+  border: 1px solid #097d32;
+}
+.errorMessage {
+  text-align: center;
 }
 </style>

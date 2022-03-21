@@ -100,41 +100,7 @@
             <th scope="col" class="text-center">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-for="user in users">
-            <td class="text-center" v-if="!user.is_active">
-              {{ user.first_name }}
-            </td>
-            <td class="text-center" v-if="!user.is_active">
-              {{ user.last_name }}
-            </td>
-            <td class="text-center" v-if="!user.is_active">{{ user.email }}</td>
-            <td class="text-center" v-if="!user.is_active">
-              {{ user.phoneNumber }}
-            </td>
-            <td class="text-center" v-if="!user.is_active">
-              {{ user.birthday }}
-            </td>
-            <td class="text-center" v-if="!user.is_active">
-              <div
-                class="btn-group"
-                role="group"
-                aria-label="Basic mixed styles example"
-              >
-                <button type="button" class="btn btn-warning">
-                  <i class="bi bi-pencil-fill"></i>
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  v-on:click="deleteUser(user.userId)"
-                >
-                  <i class="bi bi-trash-fill"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
+        
       </table>
     </div>
   </div>
@@ -164,7 +130,7 @@ export default {
   },
   methods: {
     listUsers: function () {
-      let url = "http://localhost:8000/users/";
+      let url = "https://la-huerta-be.herokuapp.com/users/";
       let config = { headers: {} };
       axios
         .get(url, config)
@@ -178,7 +144,7 @@ export default {
     },
     deleteUser: async function (id) {
       try {
-        let url = "http://localhost:8000/user/" + id + "/";
+        let url = "https://la-huerta-be.herokuapp.com/user/" + id + "/";
         let config = { headers: {} };
         await axios.delete(url, config);
         this.listUsers();
@@ -188,12 +154,10 @@ export default {
     },
     createUser: async function () {
       try {
-        let url = "http://127.0.0.1:8000/rest-auth/registration/";
+        let url = "https://la-huerta-be.herokuapp.com/rest-auth/registration/";
         let body = this.user;
         let config = { headers: {} };
         let result = await axios.post(url, body, config);
-        console.log(body);
-        console.log(result);
         this.listUsers();
       } catch (err) {
         
@@ -222,7 +186,6 @@ h1 {
   display: block;
   justify-content: center;
   align-items: flex-start;
-  background-image: url("../assets/products_background.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

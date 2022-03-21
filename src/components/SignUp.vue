@@ -3,18 +3,38 @@
     <div class="container_signUp_user">
       <form class="row g-3" v-on:submit.prevent="processSignUpUser">
         <div class="col-md-6">
-          <button type="submit" class="btn btn-primary">Cliente</button>
+          <button
+            class="btn btn-primary"
+            v-on:click.prevent="checkStatus(false)"
+          >
+            Cliente
+          </button>
         </div>
         <div class="col-md-6">
-          <button type="submit" class="btn btn-primary">Administrador</button>
+          <button
+            class="btn btn-primary"
+            v-on:click.prevent="checkStatus(true)"
+          >
+            Administrador
+          </button>
         </div>
         <div class="col-md-6">
           <label for="inputEmail4" class="form-label">Nombre</label>
-          <input type="text" class="form-control" v-model="user.first_name" required />
+          <input
+            type="text"
+            class="form-control"
+            v-model="user.firstName"
+            required
+          />
         </div>
         <div class="col-md-6">
           <label for="inputPassword4" class="form-label">Apellido</label>
-          <input type="text" class="form-control" v-model="user.last_name" required />
+          <input
+            type="text"
+            class="form-control"
+            v-model="user.lastName"
+            required
+          />
         </div>
         <div class="col-md-6">
           <label for="inputAddress" class="form-label">Telefono</label>
@@ -26,7 +46,9 @@
           />
         </div>
         <div class="col-md-6">
-          <label for="inputAddress2" class="form-label">Fecha de Nacimiento</label>
+          <label for="inputAddress2" class="form-label"
+            >Fecha de Nacimiento</label
+          >
           <input
             type="date"
             class="form-control"
@@ -36,23 +58,49 @@
         </div>
         <div class="col-md-6">
           <label for="inputCity" class="form-label">Usuario</label>
-          <input type="text" class="form-control" v-model="user.username" required />
+          <input
+            type="text"
+            class="form-control"
+            v-model="user.username"
+            required
+          />
         </div>
         <div class="col-md-6">
           <label for="inputCity" class="form-label">Correo</label>
-          <input type="text" class="form-control" v-model="user.email" required />
+          <input
+            type="text"
+            class="form-control"
+            v-model="user.email"
+            required
+          />
         </div>
         <div class="col-md-6">
           <label for="inputCity" class="form-label">Contraseña</label>
-          <input type="password" class="form-control" v-model="user.password1" required />
+          <input
+            type="password"
+            class="form-control"
+            v-model="user.password"
+            required
+          />
         </div>
         <div class="col-md-6">
           <label for="inputCity" class="form-label">Confirmar contraseña</label>
-          <input type="password" class="form-control" v-model="user.password2" required />
+          <input
+            type="password"
+            class="form-control"
+            v-model="password2"
+            required
+          />
         </div>
-        
+
         <div class="col-12">
-          <button type="submit" class="btn btn-primary">Registrarse</button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            v-on:click="processSignUpUser"
+          >
+            Registrarse
+          </button>
         </div>
       </form>
     </div>
@@ -66,40 +114,56 @@ export default {
   data: function () {
     return {
       user: {
-        birthday: new Date().toJSON().toString(),
-        date_joined: new Date().toJSON().toString(),
-        email: "",
-        first_name: "",
-        is_active: true,
-        last_login: new Date().toJSON().toString(),
-        last_name: "",
-        password1: "",
-        password2: "",
-        phoneNumber: "",
         username: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        birthday: new Date().toJSON().toString(),
+        email: "",
+        status: false,
       },
+      error: false,
+      password2: "",
     };
   },
   methods: {
     processSignUpUser: function () {
-      console.log(this.user);
-      let url = "http://127.0.0.1:8000/rest-auth/registration/";
+      let url = "https://la-huerta-be.herokuapp.com/user/";
       let body = this.user;
       let config = { headers: {} };
-      axios
-        .post(url, body, config)
-        .then((res) => {
-          this.error = false;
-          console.log(res);
-          this.$emit("completedLogin", res);
-        })
-        .catch((err) => {
-          if (err.response.status == 400) {
-            this.error = true;
-          } else {
-            alert("Error inesperado, intentelo mas tarde");
-          }
-        });
+      console.log(body);
+      if (this.user.password === this.password2) {
+        axios
+          .post(url, body, config)
+          .then((res) => {
+            this.error = false;
+            localStorage.setItem("status", this.user.status);
+            this.$router.push({ name: "logIn" });
+          })
+          .catch((err) => {
+            localStorage.setItem("status", this.user.status);
+            this.$router.push({ name: "logIn" });
+            if (err.response.status == 400) {
+              this.error = true;
+            } else {
+              alert("Error inesperado, intentelo mas tarde");
+            }
+          });
+      } else {
+        alert("Las contraseñas no coinciden");
+      }
+    },
+    checkStatus: function (e) {
+      if (e) {
+        this.user.status = e;
+        console.log(this.user.status);
+        this.$emit("status", this.user.status);
+      } else {
+        this.user.status = e;
+        console.log(this.user.status);
+        this.$emit("status", this.user.status);
+      }
     },
   },
 };

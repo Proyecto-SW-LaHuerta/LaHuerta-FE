@@ -36,21 +36,43 @@
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
-                  v-on:click="loadProduct"
-                >
-                  Productos
-                </button>
-                <button
-                  class="btn btn-dark menu text-light"
+                  v-if="!status"
                   v-on:click="loadAbout"
                 >
                   <i class="bi bi-people-fill text-light"></i> Nosotros
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
+                  v-if="!status && is_auth"
+                  v-on:click="loadProduct"
+                >
+                  <i class="bi bi-basket-fill"></i> Productos
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-if="!status && is_auth"
                   v-on:click="loadUsersCrud"
                 >
                   <i class="bi bi-cart-fill text-light"></i> Carrito
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-if="status"
+                  v-on:click="loadUsersCrud"
+                >
+                  <i class="bi bi-currency-dollar"></i> Ventas
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-on:click="loadInventory"
+                >
+                  <i class="bi bi-box2-fill"></i> Inventario
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-on:click="loadCrud"
+                >
+                  <i class="bi bi-clipboard2-plus-fill"></i> CRUD's
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
@@ -64,7 +86,7 @@
                   v-if="is_auth"
                   v-on:click="logout"
                 >
-                  Cerrar Sesión
+                  <i class="bi bi-x-octagon-fill"></i> Cerrar Sesión
                 </button>
               </div>
             </span>
@@ -94,13 +116,28 @@
 
       <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
         <li class="ms-3">
-          <a class="text-light" href="https://www.youtube.com/channel/UC_Qwl0a9d3uOZypIhA3p37g/videos" target="_blank"><i class="bi bi-youtube"></i></a>
+          <a
+            class="text-light"
+            href="https://www.youtube.com/channel/UC_Qwl0a9d3uOZypIhA3p37g/videos"
+            target="_blank"
+            ><i class="bi bi-youtube"></i
+          ></a>
         </li>
         <li class="ms-3">
-          <a class="text-light" href="https://www.instagram.com/fruverhuerta/?hl=es" target="_blank"><i class="bi bi-instagram"></i></a>
+          <a
+            class="text-light"
+            href="https://www.instagram.com/fruverhuerta/?hl=es"
+            target="_blank"
+            ><i class="bi bi-instagram"></i
+          ></a>
         </li>
         <li class="ms-3">
-          <a class="text-light" href="https://www.facebook.com/lahuertaduitama/" target="_blank"><i class="bi bi-facebook"></i></a>
+          <a
+            class="text-light"
+            href="https://www.facebook.com/lahuertaduitama/"
+            target="_blank"
+            ><i class="bi bi-facebook"></i
+          ></a>
         </li>
       </ul>
     </footer>
@@ -113,15 +150,16 @@ export default {
   data: function () {
     return {
       is_auth: false,
+      status: false,
     };
   },
   methods: {
     verifyAuth: function () {
       this.is_auth = localStorage.getItem("is_auth");
       if (this.is_auth) {
-        this.loadHome();
+        this.loadProduct();
       } else {
-        this.loadLogIn();
+        this.loadHome();
       }
     },
     logout: function () {
@@ -138,17 +176,30 @@ export default {
     loadAbout: function () {
       this.$router.push({ name: "aboutUs" });
     },
+    loadInventory: function () {
+      this.$router.push({ name: "inventory" });
+    },
     loadProduct: function () {
       this.$router.push({ name: "products" });
     },
     loadUsersCrud: function () {
-      this.$router.push({ name: "usersCrud" });
+      this.$router.push({ name: "providersCrud" });
+    },
+    loadCrud: function () {
+      this.$router.push({ name: "cruds" });
     },
     completedLogin: function (res) {
       this.is_auth = true;
       localStorage.setItem("is_auth", true);
       localStorage.setItem("token", res.data.key);
       this.verifyAuth();
+    },
+    userStatus: function (res) {
+      this.status = res;
+      console.log("status: ", this.status);
+    },
+    completedSignUp: function (status) {
+      console.log(status);
     },
   },
   created: function () {
@@ -165,7 +216,7 @@ body {
 nav {
   color: #ffffff;
   background-color: rgba(19, 19, 19, 0.8) !important;
-  opacity: 0.87;
+  opacity: 0.95;
 }
 .navbar .logo {
   width: 110px;

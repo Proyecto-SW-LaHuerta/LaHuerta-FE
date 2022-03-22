@@ -157,7 +157,7 @@
       role="alert"
       v-if="!errorDelete"
     >
-      El <strong>producto</strong> se elimino correctamente al
+      El <strong>producto</strong> se elimino correctamente del
       <strong>inventario</strong>
       <button
         type="button"
@@ -185,7 +185,7 @@
       role="alert"
       v-if="errorDelete"
     >
-      El <strong>producto</strong> no se pudo eliminar
+      El <strong>producto</strong> no se pudo eliminar del
       <strong>inventario</strong>
       <button
         type="button"
@@ -260,7 +260,7 @@ export default {
         await axios.delete(url, config);
         this.listProducts();
         this.errorDelete = false;
-      } catch (error) {
+      } catch (err) {
         this.errorDelete = true;
       }
     },

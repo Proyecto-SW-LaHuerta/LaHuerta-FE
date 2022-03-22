@@ -51,13 +51,6 @@
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
-                  v-if="is_auth && userStatus === 'false'"
-                  v-on:click="loadShopping"
-                >
-                  <i class="bi bi-cart-fill text-light"></i> Carrito
-                </button>
-                <button
-                  class="btn btn-dark menu text-light"
                   v-if="is_auth && userStatus === 'true'"
                   v-on:click="loadInventory"
                 >

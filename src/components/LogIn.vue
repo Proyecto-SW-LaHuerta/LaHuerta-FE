@@ -4,15 +4,6 @@
       <h1>Bienvenido</h1>
       <br />
       <form v-on:submit.prevent="processLogInUser">
-        <div class="row">
-          <div class="col-6">
-            <button type="button" class="btn btn-primary">Cliente</button>
-          </div>
-          <div class="col-6">
-            <button type="button" class="btn btn-primary">Admin</button>
-          </div>
-        </div>
-        <br />
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">Usuario</label>
           <input type="text" class="form-control" v-model="user.username" />
@@ -29,11 +20,10 @@
         <button
           type="submit"
           class="btn btn-primary"
-          v-on:click="processLogInUser"
         >
           Iniciar Sesión
         </button>
-        <button type="submit" class="btn btn-primary" v-on:click="loadSignUp">
+        <button type="button" class="btn btn-primary" v-on:click="loadSignUp">
           Registrarse
         </button>
       </form>
@@ -47,35 +37,53 @@ export default {
   name: "LogIn",
   data: function () {
     return {
+      users: [],
       user: {
         username: "",
         password: "",
       },
       error: false,
+      userStatus: false,
     };
   },
   methods: {
     processLogInUser: function () {
-      let url = "http://127.0.0.1:8000/rest-auth/login/";
+      let url = "https://la-huerta-be.herokuapp.com/login/";
       let body = this.user;
       let config = { headers: {} };
       axios
         .post(url, body, config)
         .then((res) => {
           this.error = false;
-          this.$emit("completedLogin", res);
+          var results = this.users.filter(function (usr) {
+            return usr.username == body.username;
+          });
+          this.$emit("completedLogin", res, results);
         })
         .catch((err) => {
-          if (err.response.status == 400) {
+          if (err.response.status == 401) {
             this.error = true;
-          } else {
-            alert("Error inesperado, intentelo mas tarde");
           }
+        });
+    },
+    listUsers: function () {
+      let url = "https://la-huerta-be.herokuapp.com/users/";
+      let config = { headers: {} };
+      axios
+        .get(url, config)
+        .then((res) => {
+          this.users = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
     loadSignUp: function () {
       this.$router.push({ name: "signUp" });
     },
+  },
+  created: function () {
+    this.listUsers();
   },
 };
 </script>
@@ -83,7 +91,7 @@ export default {
 <style>
 .logIn_user {
   margin: 0;
-  padding-top: 150px;
+  padding-top: 170px;
   height: 100%;
   width: 100%;
   position: fixed;

@@ -30,41 +30,59 @@
               >
                 <button
                   class="btn btn-dark menu text-light"
+                  v-if="userStatus === 'false'"
                   v-on:click="loadHome"
                 >
                   <i class="bi bi-house-fill text-light"></i> Inicio
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
-                  v-on:click="loadProduct"
-                >
-                  Productos
-                </button>
-                <button
-                  class="btn btn-dark menu text-light"
+                  v-if="userStatus === 'false'"
                   v-on:click="loadAbout"
                 >
                   <i class="bi bi-people-fill text-light"></i> Nosotros
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
-                  v-on:click="loadUsersCrud"
+                  v-if="is_auth && userStatus === 'false'"
+                  v-on:click="loadProduct"
+                >
+                  <i class="bi bi-basket-fill"></i> Productos
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-if="is_auth && userStatus === 'false'"
+                  v-on:click="loadShopping"
                 >
                   <i class="bi bi-cart-fill text-light"></i> Carrito
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-if="is_auth && userStatus === 'true'"
+                  v-on:click="loadInventory"
+                >
+                  <i class="bi bi-box2-fill"></i> Inventario
+                </button>
+                <button
+                  class="btn btn-dark menu text-light"
+                  v-if="is_auth && userStatus === 'true'"
+                  v-on:click="loadCrud"
+                >
+                  <i class="bi bi-clipboard2-plus-fill"></i> CRUD's
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
                   v-if="!is_auth"
                   v-on:click="loadLogIn"
                 >
-                  <i class="bi bi-person-fill text-light" /> Iniciar Sesión
+                  <i class="bi bi-person-fill text-light" /> LogIn
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
                   v-if="is_auth"
                   v-on:click="logout"
                 >
-                  Cerrar Sesión
+                  <i class="bi bi-x-octagon-fill"></i> LogOut
                 </button>
               </div>
             </span>
@@ -94,13 +112,28 @@
 
       <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
         <li class="ms-3">
-          <a class="text-light" href="https://www.youtube.com/channel/UC_Qwl0a9d3uOZypIhA3p37g/videos" target="_blank"><i class="bi bi-youtube"></i></a>
+          <a
+            class="text-light"
+            href="https://www.youtube.com/channel/UC_Qwl0a9d3uOZypIhA3p37g/videos"
+            target="_blank"
+            ><i class="bi bi-youtube"></i
+          ></a>
         </li>
         <li class="ms-3">
-          <a class="text-light" href="https://www.instagram.com/fruverhuerta/?hl=es" target="_blank"><i class="bi bi-instagram"></i></a>
+          <a
+            class="text-light"
+            href="https://www.instagram.com/fruverhuerta/?hl=es"
+            target="_blank"
+            ><i class="bi bi-instagram"></i
+          ></a>
         </li>
         <li class="ms-3">
-          <a class="text-light" href="https://www.facebook.com/lahuertaduitama/" target="_blank"><i class="bi bi-facebook"></i></a>
+          <a
+            class="text-light"
+            href="https://www.facebook.com/lahuertaduitama/"
+            target="_blank"
+            ><i class="bi bi-facebook"></i
+          ></a>
         </li>
       </ul>
     </footer>
@@ -113,15 +146,22 @@ export default {
   data: function () {
     return {
       is_auth: false,
+      userStatus: "false",
+      userResult: [],
+      shoppingData: [],
     };
   },
   methods: {
     verifyAuth: function () {
       this.is_auth = localStorage.getItem("is_auth");
       if (this.is_auth) {
-        this.loadHome();
+        if (this.userStatus === "false") {
+          this.loadProduct();
+        } else {
+          this.loadCrud();
+        }
       } else {
-        this.loadLogIn();
+        this.loadHome();
       }
     },
     logout: function () {
@@ -138,14 +178,26 @@ export default {
     loadAbout: function () {
       this.$router.push({ name: "aboutUs" });
     },
+    loadInventory: function () {
+      this.$router.push({ name: "inventory" });
+    },
     loadProduct: function () {
       this.$router.push({ name: "products" });
     },
-    loadUsersCrud: function () {
-      this.$router.push({ name: "usersCrud" });
+    loadShopping: function () {
+      this.$router.push({ name: "shoopingCart" });
     },
-    completedLogin: function (res) {
+    loadUsersCrud: function () {
+      this.$router.push({ name: "providersCrud" });
+    },
+    loadCrud: function () {
+      this.$router.push({ name: "cruds" });
+    },
+    completedLogin: function (res, results) {
+      this.userResult = JSON.stringify(results[0].status);
+      this.userStatus = this.userResult;
       this.is_auth = true;
+      localStorage.setItem("user", results[0].firstName);
       localStorage.setItem("is_auth", true);
       localStorage.setItem("token", res.data.key);
       this.verifyAuth();
@@ -165,7 +217,7 @@ body {
 nav {
   color: #ffffff;
   background-color: rgba(19, 19, 19, 0.8) !important;
-  opacity: 0.87;
+  opacity: 0.95;
 }
 .navbar .logo {
   width: 110px;

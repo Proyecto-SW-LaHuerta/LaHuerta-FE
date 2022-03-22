@@ -92,15 +92,14 @@
             required
           />
         </div>
-
+        <div class="alert alert-danger errorMessage" role="alert" v-if="error">
+          Los datos ingresados no son correctos, intentelo nuevamente
+        </div>
+        <div class="alert alert-danger errorMessage" role="alert" v-if="passwordError">
+          Las contraseñas no coinciden
+        </div>
         <div class="col-12">
-          <button
-            type="submit"
-            class="btn btn-primary"
-            v-on:click="processSignUpUser"
-          >
-            Registrarse
-          </button>
+          <button type="submit" class="btn btn-primary">Registrarse</button>
         </div>
       </form>
     </div>
@@ -125,6 +124,7 @@ export default {
       },
       error: false,
       password2: "",
+      passwordError: false,
     };
   },
   methods: {
@@ -132,7 +132,6 @@ export default {
       let url = "https://la-huerta-be.herokuapp.com/user/";
       let body = this.user;
       let config = { headers: {} };
-      console.log(body);
       if (this.user.password === this.password2) {
         axios
           .post(url, body, config)
@@ -146,22 +145,18 @@ export default {
             this.$router.push({ name: "logIn" });
             if (err.response.status == 400) {
               this.error = true;
-            } else {
-              alert("Error inesperado, intentelo mas tarde");
             }
           });
       } else {
-        alert("Las contraseñas no coinciden");
+        this.passwordError = true
       }
     },
     checkStatus: function (e) {
       if (e) {
         this.user.status = e;
-        console.log(this.user.status);
         this.$emit("status", this.user.status);
       } else {
         this.user.status = e;
-        console.log(this.user.status);
         this.$emit("status", this.user.status);
       }
     },
@@ -188,7 +183,7 @@ export default {
   align-content: flex-start;
 }
 .container_signUp_user {
-  margin-top: 110px;
+  margin-top: 100px;
   border: 1px solid #b2cb4c;
   background-color: rgba(19, 19, 19, 0.75);
   border-radius: 10px;

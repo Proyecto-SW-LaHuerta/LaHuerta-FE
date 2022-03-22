@@ -30,13 +30,13 @@
         </div>
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img src="../assets/home_background.jpg" class="d-block w-100" />
+            <img src="../assets/home_offer_1.png" class="d-block w-100" />
           </div>
           <div class="carousel-item">
-            <img src="../assets/home_background.jpg" class="d-block w-100" />
+            <img src="../assets/home_offer_2.jpg" class="d-block w-100" />
           </div>
           <div class="carousel-item">
-            <img src="../assets/home_background.jpg" class="d-block w-100" />
+            <img src="../assets/home_offer_3.jpg" class="d-block w-100" />
           </div>
         </div>
         <button
@@ -79,7 +79,7 @@
 }
 .carousel-container {
   margin-top: 50px;
-  width: 60%;
+  width: 70%;
   height: max-content;
   padding: 30px 0;
 }

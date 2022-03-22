@@ -5,6 +5,7 @@ import LogIn from './components/LogIn.vue'
 import SignUp from './components/SignUp.vue'
 import AboutUs from './components/About.vue'
 import Inventory from './components/Inventory.vue'
+import Shooping from './components/Shooping.vue'
 import Cruds from './components/Cruds/Crud.vue'
 import UsersCrud from './components/Cruds/UserCrud.vue'
 import ProductsCrud from './components/Cruds/ProductsCrud.vue'
@@ -15,6 +16,10 @@ import NationalProd from './components/Products/NationalProd.vue'
 import ImportedProd from './components/Products/ImportedProd.vue'
 
 const routes = [{
+    path: '/',
+    name: 'root',
+    component: App
+}, {
     path: '/home',
     name: 'home',
     component: Home
@@ -38,6 +43,10 @@ const routes = [{
     path: '/products',
     name: 'products',
     component: Products
+}, {
+    path: '/shoopingCart',
+    name: 'shoopingCart',
+    component: Shooping
 }, {
     path: '/nationalProducts',
     name: 'nationalProducts',

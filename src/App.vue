@@ -30,46 +30,42 @@
               >
                 <button
                   class="btn btn-dark menu text-light"
+                  v-if="userStatus === 'false'"
                   v-on:click="loadHome"
                 >
                   <i class="bi bi-house-fill text-light"></i> Inicio
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
-                  v-if="!status"
+                  v-if="userStatus === 'false'"
                   v-on:click="loadAbout"
                 >
                   <i class="bi bi-people-fill text-light"></i> Nosotros
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
-                  v-if="!status && is_auth"
+                  v-if="is_auth && userStatus === 'false'"
                   v-on:click="loadProduct"
                 >
                   <i class="bi bi-basket-fill"></i> Productos
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
-                  v-if="!status && is_auth"
-                  v-on:click="loadUsersCrud"
+                  v-if="is_auth && userStatus === 'false'"
+                  v-on:click="loadShopping"
                 >
                   <i class="bi bi-cart-fill text-light"></i> Carrito
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
-                  v-if="status"
-                  v-on:click="loadUsersCrud"
-                >
-                  <i class="bi bi-currency-dollar"></i> Ventas
-                </button>
-                <button
-                  class="btn btn-dark menu text-light"
+                  v-if="is_auth && userStatus === 'true'"
                   v-on:click="loadInventory"
                 >
                   <i class="bi bi-box2-fill"></i> Inventario
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
+                  v-if="is_auth && userStatus === 'true'"
                   v-on:click="loadCrud"
                 >
                   <i class="bi bi-clipboard2-plus-fill"></i> CRUD's
@@ -79,14 +75,14 @@
                   v-if="!is_auth"
                   v-on:click="loadLogIn"
                 >
-                  <i class="bi bi-person-fill text-light" /> Iniciar Sesión
+                  <i class="bi bi-person-fill text-light" /> LogIn
                 </button>
                 <button
                   class="btn btn-dark menu text-light"
                   v-if="is_auth"
                   v-on:click="logout"
                 >
-                  <i class="bi bi-x-octagon-fill"></i> Cerrar Sesión
+                  <i class="bi bi-x-octagon-fill"></i> LogOut
                 </button>
               </div>
             </span>
@@ -150,14 +146,20 @@ export default {
   data: function () {
     return {
       is_auth: false,
-      status: false,
+      userStatus: "false",
+      userResult: [],
+      shoppingData: [],
     };
   },
   methods: {
     verifyAuth: function () {
       this.is_auth = localStorage.getItem("is_auth");
       if (this.is_auth) {
-        this.loadProduct();
+        if (this.userStatus === "false") {
+          this.loadProduct();
+        } else {
+          this.loadCrud();
+        }
       } else {
         this.loadHome();
       }
@@ -182,24 +184,23 @@ export default {
     loadProduct: function () {
       this.$router.push({ name: "products" });
     },
+    loadShopping: function () {
+      this.$router.push({ name: "shoopingCart" });
+    },
     loadUsersCrud: function () {
       this.$router.push({ name: "providersCrud" });
     },
     loadCrud: function () {
       this.$router.push({ name: "cruds" });
     },
-    completedLogin: function (res) {
+    completedLogin: function (res, results) {
+      this.userResult = JSON.stringify(results[0].status);
+      this.userStatus = this.userResult;
       this.is_auth = true;
+      localStorage.setItem("user", results[0].firstName);
       localStorage.setItem("is_auth", true);
       localStorage.setItem("token", res.data.key);
       this.verifyAuth();
-    },
-    userStatus: function (res) {
-      this.status = res;
-      console.log("status: ", this.status);
-    },
-    completedSignUp: function (status) {
-      console.log(status);
     },
   },
   created: function () {

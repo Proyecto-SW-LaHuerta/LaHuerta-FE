@@ -83,7 +83,7 @@
   align-content: flex-start;
 }
 .container {
-  padding-top: 120px;
+  padding-top: 130px;
 }
 .paragraph {
   text-align: justify;

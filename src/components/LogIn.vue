@@ -20,11 +20,10 @@
         <button
           type="submit"
           class="btn btn-primary"
-          v-on:click="processLogInUser"
         >
           Iniciar Sesión
         </button>
-        <button type="submit" class="btn btn-primary" v-on:click="loadSignUp">
+        <button type="button" class="btn btn-primary" v-on:click="loadSignUp">
           Registrarse
         </button>
       </form>
@@ -44,6 +43,7 @@ export default {
         password: "",
       },
       error: false,
+      userStatus: false,
     };
   },
   methods: {
@@ -55,12 +55,14 @@ export default {
         .post(url, body, config)
         .then((res) => {
           this.error = false;
-          this.$emit("completedLogin", res);
+          var results = this.users.filter(function (usr) {
+            return usr.username == body.username;
+          });
+          this.$emit("completedLogin", res, results);
         })
         .catch((err) => {
-          if (err.response.status == 400) {
+          if (err.response.status == 401) {
             this.error = true;
-            alert("Error, intentelo mas tarde");
           }
         });
     },
@@ -80,13 +82,16 @@ export default {
       this.$router.push({ name: "signUp" });
     },
   },
+  created: function () {
+    this.listUsers();
+  },
 };
 </script>
 
 <style>
 .logIn_user {
   margin: 0;
-  padding-top: 150px;
+  padding-top: 170px;
   height: 100%;
   width: 100%;
   position: fixed;

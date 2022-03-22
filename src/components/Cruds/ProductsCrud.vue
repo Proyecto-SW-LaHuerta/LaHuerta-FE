@@ -125,9 +125,6 @@
                 role="group"
                 aria-label="Basic mixed styles example"
               >
-                <button type="button" class="btn btn-warning">
-                  <i class="bi bi-pencil-fill"></i>
-                </button>
                 <button
                   type="button"
                   class="btn btn-danger"
@@ -141,6 +138,62 @@
         </tbody>
       </table>
     </div>
+    <div
+      class="alert alert-success alert-dismissible fade show"
+      role="alert"
+      v-if="!error"
+    >
+      El <strong>producto</strong> se agrego correctamente al
+      <strong>inventario</strong>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div
+      class="alert alert-success alert-dismissible fade show"
+      role="alert"
+      v-if="!errorDelete"
+    >
+      El <strong>producto</strong> se elimino correctamente al
+      <strong>inventario</strong>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div
+      class="alert alert-danger alert-dismissible fade show"
+      role="alert"
+      v-if="error"
+    >
+      El <strong>producto</strong> no se pudo agregar
+      <strong>inventario</strong>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div
+      class="alert alert-danger alert-dismissible fade show"
+      role="alert"
+      v-if="errorDelete"
+    >
+      El <strong>producto</strong> no se pudo eliminar
+      <strong>inventario</strong>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
   </div>
 </template>
 
@@ -149,9 +202,11 @@ import axios from "axios";
 
 var loads = [];
 export default {
-  name: "UserCrud",
+  name: "ProductsCrud",
   data: function () {
     return {
+      errorDelete: false,
+      error: false,
       categories: [],
       products: [],
       product: {
@@ -193,8 +248,9 @@ export default {
         };
         let result = await axios.post(url, body, config);
         this.listProducts();
+        this.error = false;
       } catch (err) {
-        alert("Error, algo inespeado sucedio");
+        this.error = true;
       }
     },
     deleteProduct: async function (id) {
@@ -203,8 +259,9 @@ export default {
         let config = { headers: {} };
         await axios.delete(url, config);
         this.listProducts();
+        this.errorDelete = false;
       } catch (error) {
-        console.log(error);
+        this.errorDelete = true;
       }
     },
     listCategories: function (e) {
@@ -277,5 +334,26 @@ h1 {
 }
 .crud-container {
   height: max-content;
+}
+.alert.alert-secondary {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin-bottom: 0rem;
+}
+.alert.alert-success.alert-dismissible.fade.show {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: 200px;
+}
+.alert.alert-danger.alert-dismissible.fade.show {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: 200px;
 }
 </style>

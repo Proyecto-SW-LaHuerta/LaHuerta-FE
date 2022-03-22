@@ -25,7 +25,7 @@
 <script>
 import axios from "axios";
 export default {
-  name: "App",
+  name: "Vegetables",
   data: function () {
     return {
       nationalProds: [],
@@ -81,7 +81,7 @@ export default {
 <style>
 .vegProducts {
   margin: 0;
-  padding: 110px 20px;
+  padding: 110px 30px;
   height: 100%;
   width: 100%;
   position: fixed;
@@ -100,7 +100,7 @@ export default {
   margin: 30px;
 }
 .vegProducts-container {
-  margin-top: 96px;
+  margin-top: 100px;
   height: max-content;
 }
 .vegProducts-container .btn-light {

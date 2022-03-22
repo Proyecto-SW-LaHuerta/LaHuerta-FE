@@ -1,6 +1,6 @@
 <template>
-  <div class="products">
-    <div class="products-container">
+  <div class="crud">
+    <div class="crud-container">
       <div class="row">
         <div class="col">
           <button type="button" class="btn btn-light">
@@ -45,7 +45,7 @@
 
 <script>
 export default {
-  name: "App",
+  name: "Crud",
   data: function () {
     return {
       is_auth: false,
@@ -65,7 +65,7 @@ export default {
 </script>
 
 <style>
-.products {
+.crud {
   margin: 0;
   padding: 0%;
   height: 100%;
@@ -79,17 +79,17 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
 }
-.products-container {
+.crud-container {
   margin-top: 96px;
   height: max-content;
 }
-.products-container .btn-light {
+.crud-container .btn-light {
   color: #000;
   background-color: #f8f9fa;
   border-color: #f8f9fa;
   height: 242px;
 }
-.products-container .card-img-top {
+.crud-container .card-img-top {
   height: 161px;
 }
 .card-body {

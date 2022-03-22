@@ -38,7 +38,7 @@ import axios from "axios";
 
 var loads = [];
 export default {
-  name: "UserCrud",
+  name: "Inventory",
   data: function () {
     return {
       categories: [],
@@ -83,7 +83,6 @@ export default {
         let result = await axios.post(url, body, config);
         this.listProducts();
       } catch (err) {
-        alert("Error, algo inespeado sucedio");
       }
     },
     deleteProduct: async function (id) {

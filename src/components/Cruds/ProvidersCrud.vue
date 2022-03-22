@@ -80,9 +80,6 @@
                 role="group"
                 aria-label="Basic mixed styles example"
               >
-                <button type="button" class="btn btn-warning">
-                  <i class="bi bi-pencil-fill"></i>
-                </button>
                 <button
                   type="button"
                   class="btn btn-danger"
@@ -96,15 +93,69 @@
         </tbody>
       </table>
     </div>
+    <div
+      class="alert alert-success alert-dismissible fade show"
+      role="alert"
+      v-if="!error"
+    >
+      El <strong>proveedor</strong> se agrego correctamente
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div
+      class="alert alert-success alert-dismissible fade show"
+      role="alert"
+      v-if="!errorDelete"
+    >
+      El <strong>proveedor</strong> se elimino correctamente
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div
+      class="alert alert-danger alert-dismissible fade show"
+      role="alert"
+      v-if="error"
+    >
+      El <strong>proveedor</strong> no se pudo agregar
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div
+      class="alert alert-danger alert-dismissible fade show"
+      role="alert"
+      v-if="errorDelete"
+    >
+      El <strong>proveedor</strong> no se pudo eliminar
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 export default {
-  name: "UserCrud",
+  name: "ProvidersCrud",
   data: function () {
     return {
+      errorDelete: false,
+      error: false,
       providers: [],
       provider: {
         name: "",
@@ -133,8 +184,9 @@ export default {
         let config = { headers: {} };
         await axios.delete(url, config);
         this.listProviders();
+        this.errorDelete = false;
       } catch (err) {
-        alert("Error, algo inespeado sucedio");
+        this.errorDelete = true;
       }
     },
     createProvider: async function () {
@@ -144,8 +196,9 @@ export default {
         let config = { headers: {} };
         let result = await axios.post(url, body, config);
         this.listProviders();
+        this.error = false;
       } catch (err) {
-        alert("Error, algo inespeado sucedio");
+        this.error = true;
       }
     },
   },
@@ -191,5 +244,26 @@ h1 {
 }
 .crud-container {
   height: max-content;
+}
+.alert.alert-secondary {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin-bottom: 0rem;
+}
+.alert.alert-success.alert-dismissible.fade.show {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: 200px;
+}
+.alert.alert-danger.alert-dismissible.fade.show {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: 200px;
 }
 </style>

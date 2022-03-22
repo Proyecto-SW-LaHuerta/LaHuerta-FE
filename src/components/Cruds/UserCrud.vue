@@ -136,7 +136,6 @@ export default {
         .get(url, config)
         .then((res) => {
           this.users = res.data;
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);

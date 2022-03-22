@@ -1,7 +1,9 @@
 <template>
   <div class="products">
     <div class="products-container">
-      <div class="row">
+      <h1>¡¡ Bienvenid@ {{this.userName}} !!</h1>
+      <hr />
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         <div class="col">
           <button type="button" class="btn btn-light">
             <div
@@ -63,11 +65,12 @@
 
 <script>
 export default {
-  name: "App",
+  name: "Products",
   data: function () {
     return {
       is_auth: false,
       status: false,
+      userName: "",
     };
   },
   methods: {
@@ -80,15 +83,20 @@ export default {
     loadVegetable: function () {
       this.$router.push({ name: "vegetables" });
     },
+    loadUserName: function () {
+      this.userName = localStorage.getItem("user");
+    },
   },
-  created: function () {},
+  created: function () {
+    this.loadUserName();
+  },
 };
 </script>
 
 <style>
 .products {
   margin: 0;
-  padding: 0%;
+  padding: 110px 30px;
   height: 100%;
   width: 100%;
   position: fixed;
@@ -99,9 +107,14 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  overflow: auto;
+  align-content: flex-start;
+}
+.products h1 {
+  color: white;
+  margin: 30px;
 }
 .products-container {
-  margin-top: 96px;
   height: max-content;
 }
 .products-container .btn-light {

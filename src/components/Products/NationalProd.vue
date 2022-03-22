@@ -57,7 +57,6 @@
         </div>
       </div>
     </div>
-
     <div
       class="alert alert-success alert-dismissible fade show"
       role="alert"
@@ -107,7 +106,6 @@ export default {
             return 0;
           });
           this.nationalProds = results;
-          //this.checkAvailable(this.nationalProds);
         })
         .catch((err) => {
           console.log(err);
